@@ -1,7 +1,7 @@
 import Navbar from '@/components/Navbar';
-import { cn } from '@/hooks/use-on-click-outside';
 import { Inter } from 'next/font/google';
 import '@/styles/globals.css';
+import { cn } from '@/lib/utils';
 
 export const metadata = {
   title: 'Leaguereddit',
