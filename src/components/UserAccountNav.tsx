@@ -1,6 +1,7 @@
 import { User } from 'next-auth';
 import React from 'react';
 import { DropdownMenu, DropdownMenuTrigger } from './ui/DropdownMenu';
+import UserAvatar from './UserAvatar';
 
 interface UserAccountNavProps {
   user: Pick<User, 'name' | 'email' | 'image'>;
