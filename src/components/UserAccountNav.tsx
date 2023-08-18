@@ -11,7 +11,13 @@ const UserAccountNav: React.FC<UserAccountNavProps> = ({ user }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <UserAvatar user={user} />
+        <UserAvatar
+          className="h-8 w-8"
+          user={{
+            name: user.name || null,
+            image: user.image || null,
+          }}
+        />
       </DropdownMenuTrigger>
     </DropdownMenu>
   );
