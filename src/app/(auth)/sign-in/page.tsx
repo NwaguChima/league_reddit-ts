@@ -1,6 +1,7 @@
 import SignIn from '@/components/SignIn';
 import { buttonVariants } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
+import { ChevronLeftIcon } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 
@@ -15,6 +16,7 @@ const page: React.FC = () => {
             'self-start -mt-20'
           )}
         >
+          <ChevronLeftIcon className="mr-2 w-4 h-4" />
           Home
         </Link>
 
