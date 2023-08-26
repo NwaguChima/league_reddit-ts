@@ -1,3 +1,4 @@
+import SubscribeLeaveToggle from '@/components/SubscribeLeaveToggle';
 import { getAuthSession } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { format } from 'date-fns';
@@ -91,7 +92,7 @@ const Layout = async ({
               ) : null}
 
               {subreddit.creatorId !== session?.user?.id ? (
-                <SubscribeLeaveToggle isSubscribed={isSubscribed} />
+                <SubscribeLeaveToggle />
               ) : null}
             </dl>
           </div>
