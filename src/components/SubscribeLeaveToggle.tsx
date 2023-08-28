@@ -83,6 +83,7 @@ const SubscribeLeaveToggle: React.FC<SubscribeLeaveToggleProps> = ({
     },
 
     onSuccess: () => {
+      // basically refreshes the page!
       startTransition(() => {
         router.refresh();
       }),
