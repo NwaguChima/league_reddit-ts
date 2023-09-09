@@ -8,6 +8,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import type EditorJS from '@editorjs/editorjs';
 import { uploadFiles } from '@/lib/uploadthing';
 import { toast } from '@/hooks/use-toast';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+import { usePathname, useRouter } from 'next/navigation';
 
 interface EditorProps {
   subredditId: string;
@@ -30,6 +33,8 @@ const Editor: React.FC<EditorProps> = ({ subredditId }) => {
   const ref = useRef<EditorJS>();
   const [isMounted, setIsMounted] = useState(false);
   const _titleRef = useRef<HTMLTextAreaElement>(null);
+  const pathname = usePathname();
+  const router = useRouter();
 
   const initializeEditor = useCallback(async () => {
     const EditorJS = (await import('@editorjs/editorjs')).default;
@@ -126,6 +131,51 @@ const Editor: React.FC<EditorProps> = ({ subredditId }) => {
     }
   }, [isMounted, initializeEditor]);
 
+  const { mutate: createPost } = useMutation({
+    mutationFn: async ({
+      title,
+      content,
+      subredditId,
+    }: PostCreationRequest) => {
+      const payload: PostCreationRequest = {
+        title,
+        content,
+        subredditId,
+      };
+      const { data } = await axios.post('/api/subreddit/post/create', payload);
+      return data;
+    },
+    onError: () => {
+      return toast({
+        title: 'Something went wrong',
+        description: 'Your post was not published, please try again later',
+        variant: 'destructive',
+      });
+    },
+    onSuccess: () => {
+      const newPathname = pathname.split('/').slice(0, -1).join('/');
+      router.push(newPathname);
+
+      router.refresh();
+
+      return toast({
+        description: 'Your post was published successfully',
+      });
+    },
+  });
+
+  async function onSubmit(data: PostCreationRequest) {
+    const blocks = await ref.current?.save();
+
+    const payload: PostCreationRequest = {
+      title: data.title,
+      content: blocks,
+      subredditId,
+    };
+
+    createPost(payload);
+  }
+
   const { ref: titleRef, ...rest } = register('title');
 
   return (
@@ -133,9 +183,7 @@ const Editor: React.FC<EditorProps> = ({ subredditId }) => {
       <form
         id="subreddit-post-form"
         className="w-fit"
-        onSubmit={handleSubmit((e) => {
-          console.log(e);
-        })}
+        onSubmit={handleSubmit(onSubmit)}
       >
         <div className="prose prose-stone dark:prose-invert">
           <TextareaAutosize
