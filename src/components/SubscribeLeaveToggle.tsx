@@ -20,6 +20,7 @@ const SubscribeLeaveToggle: React.FC<SubscribeLeaveToggleProps> = ({
   subredditName,
   isSubscribed,
 }) => {
+
   const { loginToast } = useCustomToast();
   const router = useRouter();
 
@@ -29,7 +30,7 @@ const SubscribeLeaveToggle: React.FC<SubscribeLeaveToggleProps> = ({
         subredditId,
       };
 
-      const { data } = await axios.post('/api/subreddit/unsubscribe', payload);
+      const { data } = await axios.post('/api/subreddit/subscribe', payload);
       return data as string;
     },
 
