@@ -20,7 +20,6 @@ const SubscribeLeaveToggle: React.FC<SubscribeLeaveToggleProps> = ({
   subredditName,
   isSubscribed,
 }) => {
-
   const { loginToast } = useCustomToast();
   const router = useRouter();
 
@@ -38,6 +37,12 @@ const SubscribeLeaveToggle: React.FC<SubscribeLeaveToggleProps> = ({
       if (error instanceof AxiosError) {
         if (error.response?.status === 401) {
           return loginToast();
+        } else if (error.response?.status === 400) {
+          return toast({
+            title: `${error.response.data || 'Something went wrong'}`,
+            description: 'Could not subscribe to subreddit',
+            variant: 'destructive',
+          });
         }
       }
 
@@ -73,6 +78,12 @@ const SubscribeLeaveToggle: React.FC<SubscribeLeaveToggleProps> = ({
       if (error instanceof AxiosError) {
         if (error.response?.status === 401) {
           return loginToast();
+        } else if (error.response?.status === 400) {
+          return toast({
+            title: `${error.response.data || 'Something went wrong'}`,
+            description: 'Could not unSubscribe to subreddit',
+            variant: 'destructive',
+          });
         }
       }
 

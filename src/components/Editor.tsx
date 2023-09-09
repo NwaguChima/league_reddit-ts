@@ -9,7 +9,7 @@ import type EditorJS from '@editorjs/editorjs';
 import { uploadFiles } from '@/lib/uploadthing';
 import { toast } from '@/hooks/use-toast';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { usePathname, useRouter } from 'next/navigation';
 
 interface EditorProps {
@@ -145,7 +145,17 @@ const Editor: React.FC<EditorProps> = ({ subredditId }) => {
       const { data } = await axios.post('/api/subreddit/post/create', payload);
       return data;
     },
-    onError: () => {
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 400) {
+          return toast({
+            title: `${error.response.data || 'Something went wrong'}`,
+            description: 'Your post was not published, please try again later',
+            variant: 'destructive',
+          });
+        }
+      }
+
       return toast({
         title: 'Something went wrong',
         description: 'Your post was not published, please try again later',
