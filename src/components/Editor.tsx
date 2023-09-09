@@ -7,6 +7,7 @@ import { PostCreationRequest, PostValidator } from '@/lib/validators/post';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type EditorJS from '@editorjs/editorjs';
 import { uploadFiles } from '@/lib/uploadthing';
+import { toast } from '@/hooks/use-toast';
 
 interface EditorProps {
   subredditId: string;
@@ -29,12 +30,6 @@ const Editor: React.FC<EditorProps> = ({ subredditId }) => {
   const ref = useRef<EditorJS>();
   const [isMounted, setIsMounted] = useState(false);
   const _titleRef = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setIsMounted(true);
-    }
-  }, []);
 
   const initializeEditor = useCallback(async () => {
     const EditorJS = (await import('@editorjs/editorjs')).default;
@@ -95,6 +90,24 @@ const Editor: React.FC<EditorProps> = ({ subredditId }) => {
   }, []);
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsMounted(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (Object.keys(errors).length) {
+      for (const [_key, value] of Object.entries(errors)) {
+        toast({
+          title: 'Something went wrong',
+          description: (value as { message: string }).message,
+          variant: 'destructive',
+        });
+      }
+    }
+  }, [errors]);
+
+  useEffect(() => {
     const init = async () => {
       await initializeEditor();
 
@@ -117,7 +130,13 @@ const Editor: React.FC<EditorProps> = ({ subredditId }) => {
 
   return (
     <div className="w-full p-4 bg-zinc-50 rounded-lg border border-zinc-200">
-      <form id="subreddit-post-form" className="w-fit" onSubmit={() => {}}>
+      <form
+        id="subreddit-post-form"
+        className="w-fit"
+        onSubmit={handleSubmit((e) => {
+          console.log(e);
+        })}
+      >
         <div className="prose prose-stone dark:prose-invert">
           <TextareaAutosize
             ref={(e) => {
