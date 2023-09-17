@@ -5,6 +5,8 @@ import { Label } from './ui/Label';
 import { Textarea } from './ui/Textarea';
 import { Button } from './ui/Button';
 import { useMutation } from '@tanstack/react-query';
+import { CommentRequest } from '@/lib/validators/comment';
+import axios from 'axios';
 
 interface CreateCommentProps {}
 
@@ -12,7 +14,20 @@ const CreateComment: React.FC<CreateCommentProps> = ({}) => {
   const [input, setInput] = useState<string>('');
 
   const {} = useMutation({
-    mutationFn: async () => {},
+    mutationFn: async ({ postId, text, replyToId }: CommentRequest) => {
+      const payload: CommentRequest = {
+        postId,
+        text,
+        replyToId,
+      };
+
+      const { data } = await axios.patch(
+        `/api/subreddit/post/comment`,
+        payload
+      );
+
+      return data;
+    },
   });
 
   return (
