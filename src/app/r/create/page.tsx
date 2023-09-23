@@ -8,6 +8,7 @@ import axios, { AxiosError } from 'axios';
 import { CreateSubredditPayload } from '@/lib/validators/subreddit';
 import { toast } from '@/hooks/use-toast';
 import useCustomToast from '@/hooks/use-custom-toast';
+import { replaceSpaceWithUnderscore } from '@/lib/utils';
 
 const Page = () => {
   const [input, setInput] = useState<string>('');
@@ -17,7 +18,7 @@ const Page = () => {
   const { mutate: createCommunity, isLoading } = useMutation({
     mutationFn: async () => {
       const payload: CreateSubredditPayload = {
-        name: input,
+        name: replaceSpaceWithUnderscore(input),
       };
 
       const { data } = await axios.post('/api/subreddit', payload);

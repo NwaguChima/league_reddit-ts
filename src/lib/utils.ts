@@ -54,3 +54,7 @@ export function formatTimeToNow(date: Date): string {
     },
   });
 }
+
+export const replaceSpaceWithUnderscore = (str: string) => {
+  return str.replace(/\s/g, '_').trim();
+};
